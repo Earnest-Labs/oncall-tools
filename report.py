@@ -74,6 +74,12 @@ def readYaml(fileName):
     with open(fileName,'r') as f:
         return yaml.load(f)
 
+def readDefaults(fileName):
+    try:
+        return readYaml(fileName)
+    except FileNotFoundError: # don't care
+        return {}
+
 def timeDeltaFromString(timeSpec):
     t = datetime.datetime.strptime(timeSpec,"%H:%M:%S")
     return datetime.time(hour=t.hour, minute=t.minute, second=t.second)
@@ -114,21 +120,21 @@ def argumentParser(defaults):
     span.add_argument('-t',dest='until',help='To timestamp',required=True);
 
     result.add_argument('--tz',dest='timezone',help='Timezone')
-    result.add_argument('--cutover_weekday',dest='cutover_weekday',type=int,
+    result.add_argument('--cutover_weekday', dest='cutover_weekday', default=0,type=int,
                         help='Day of week where cutover occurs {Monday=0,Tuesday=1,etc}')
-    result.add_argument('--cutover_time',dest='cutover_time',
+    result.add_argument('--cutover_time', dest='cutover_time', default='09:00:00',
                         help='Time of day where cutover occurs {e.g., 09:00:00}')
-    result.add_argument('--pd-api-token',dest='pd_api_token',
+    result.add_argument('--pd-api-token', dest='pd_api_token', default='pagerduty_api_token',
                         help='Pagerduty API token to request using passwordstore.org')
-    result.add_argument('--allowed-services',dest='allowed_services',
+    result.add_argument('--allowed-services', dest='allowed_services',
                         help='Allowed Pagerduty service ids')
-    result.add_argument('--template',dest='template',
+    result.add_argument('--template', dest='template', default='template.md',
                         help='Template file name. Uses mustache.io format')
-    result.add_argument('-o','--output-file',dest='outputFileName',
+    result.add_argument('-o','--output-file', dest='outputFileName',
                         help='Output file')
-    result.add_argument('-e','--edit',dest='edit',action='store_true',default=False,
+    result.add_argument('-e','--edit', dest='edit', action='store_true', default=False,
                         help='Open report in $EDITOR')
-    result.add_argument('-c','--copy',dest='copy',action='store_true',default=False,
+    result.add_argument('-c','--copy', dest='copy', action='store_true', default=False,
                         help='Copy report to clipboard')
 
     result.set_defaults(**defaults)
@@ -201,7 +207,7 @@ def editReport(report):
         shutil.rmtree(tempDir)
 
 def main():
-    defaults = readYaml(CONFIGURATION)
+    defaults = readDefaults(CONFIGURATION)
     args = argumentParser(defaults).parse_args()
 
     reportData = getReportData(args)
