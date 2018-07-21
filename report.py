@@ -64,11 +64,11 @@ def groupIncidentsByDate(raw, munger, since, until):
 
 def readFile(fileName):
     with open(fileName, 'r') as f:
-        return f.read();
+        return f.read()
 
 def writeFile(fileName, data):
     with open(fileName, 'w') as f:
-        f.write(data);
+        f.write(data)
 
 def readYaml(fileName):
     with open(fileName, 'r') as f:
@@ -109,15 +109,15 @@ def argumentParser(defaults):
                                  description='valid subcommands')
 
     current = subs.add_parser('current', help='Current week')
-    current.set_defaults(func=timeCurrent);
+    current.set_defaults(func=timeCurrent)
 
     previous = subs.add_parser('previous', help='Previous week')
-    previous.set_defaults(func=timePrevious);
+    previous.set_defaults(func=timePrevious)
 
     span = subs.add_parser('span', help='Span of times {-f _timestamp_ -t _timestamp}')
-    span.set_defaults(func=timeSpan);
-    span.add_argument('-f', dest='since', help='From timestamp', required=True);
-    span.add_argument('-t', dest='until', help='To timestamp', required=True);
+    span.set_defaults(func=timeSpan)
+    span.add_argument('-f', dest='since', help='From timestamp', required=True)
+    span.add_argument('-t', dest='until', help='To timestamp', required=True)
 
     result.add_argument('--tz', dest='timezone', help='Timezone')
     result.add_argument('--cutover_weekday', dest='cutover_weekday', default=0, type=int,
@@ -147,7 +147,7 @@ def calculateTotal(byDate):
     return total
 
 def hourlyHistogram(byDate):
-    hours = [0 for dontCare in range(24)]
+    hours = [0] * 24
     for date in byDate:
         for incident in date['incidents']:
             hour = incident['created']['time'].hour
@@ -212,7 +212,7 @@ def main():
 
     reportData = getReportData(args)
     template = readFile(args.template)
-    report = pystache.render(template, reportData);
+    report = pystache.render(template, reportData)
     editedReport = editReport(report)
     if (args.outputFileName):
         writeFile(args.outputFileName, editedReport)

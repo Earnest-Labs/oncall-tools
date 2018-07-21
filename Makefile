@@ -19,10 +19,10 @@ report: .setup report.py template.md
 	touch $@
 
 $(VENV): .venv-installed
-	virtualenv --no-site-packages $(VENV)
+	virtualenv -p python3 --no-site-packages $(VENV)
 
 clean:
-	-rm -rf $(VENV) .setup .venv-installed
+	-rm -rf $(VENV) .setup .venv-installed build dist oncallTools.egg-info
 
 .venv-installed:
 	which virtualenv || $(PIP) install virtualenv

@@ -37,7 +37,7 @@ No incidents.
   * day (07:00-23:00): {{statistics.dayTimePages}}
   {{/statistics.dayTimePages}}
   {{#statistics.nightTimePages}}
-  * night (07:00-23:00): {{statistics.nightTimePages}}
+  * night (23:01-06:59): {{statistics.nightTimePages}}
   {{/statistics.nightTimePages}}
 * Hours Worked: _[Total Hours Worked]_
   * _[Person]_: _[Hours]_
