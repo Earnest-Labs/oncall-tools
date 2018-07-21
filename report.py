@@ -15,7 +15,7 @@ import yaml
 PAGERDUTY_ENDPOINT = 'https://api.pagerduty.com/'
 PAGERDUTY_INCIDENTS = PAGERDUTY_ENDPOINT + 'incidents'
 CONFIGURATION = os.path.expanduser('~/.etc/oncall-tools.conf.yaml')
-WEEKDAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] # 0 is monday because python.
+WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] # 0 is monday because python.
 
 def getPagerDutyIncidents(token, since, until, allowedServices,
                           offset = 0, total = True, limit = 100):
@@ -28,7 +28,7 @@ def getPagerDutyIncidents(token, since, until, allowedServices,
     headers = headers={'Content-Type': 'application/json',
                        'Accept': 'application/vnd.pagerduty+json;version=2',
                        'Authorization': 'Token token={token}'.format(token=token)}
-    r = requests.get(PAGERDUTY_INCIDENTS,params=params,headers=headers)
+    r = requests.get(PAGERDUTY_INCIDENTS, params=params, headers=headers)
     r.raise_for_status()
     return r.json()
 
@@ -44,9 +44,9 @@ def static_vars(**kwargs):
 
 @static_vars(urgencyMap = {'low': 'L', 'high': 'H'})
 def mungeIncident(incident):
-    createdDateTime = datetime.datetime.fromisoformat(incident['created_at'].replace('Z','+00:00'))
+    createdDateTime = datetime.datetime.fromisoformat(incident['created_at'].replace('Z', '+00:00'))
     return { **incident,
-             'urgencyCode': mungeIncident.urgencyMap.get(incident['urgency'],'Unknown'),
+             'urgencyCode': mungeIncident.urgencyMap.get(incident['urgency'], 'Unknown'),
              'created': { 'date': createdDateTime.date(),
                            'time': createdDateTime.time() },
     }
@@ -58,20 +58,20 @@ def groupIncidentsByDate(raw, munger, since, until):
         byDate[str(date)] = {'date':date,
                              'weekday':WEEKDAYS[date.weekday()],
                              'incidents':[]}
-    for incident in map(munger,raw['incidents']):
+    for incident in map(munger, raw['incidents']):
         byDate[str(incident['created']['date'])]['incidents'].append(incident)
     return byDate.values()
 
 def readFile(fileName):
-    with open(fileName,'r') as f:
+    with open(fileName, 'r') as f:
         return f.read();
 
-def writeFile(fileName,data):
-    with open(fileName,'w') as f:
+def writeFile(fileName, data):
+    with open(fileName, 'w') as f:
         f.write(data);
 
 def readYaml(fileName):
-    with open(fileName,'r') as f:
+    with open(fileName, 'r') as f:
         return yaml.load(f)
 
 def readDefaults(fileName):
@@ -81,7 +81,7 @@ def readDefaults(fileName):
         return {}
 
 def timeDeltaFromString(timeSpec):
-    t = datetime.datetime.strptime(timeSpec,"%H:%M:%S")
+    t = datetime.datetime.strptime(timeSpec, "%H:%M:%S")
     return datetime.time(hour=t.hour, minute=t.minute, second=t.second)
 
 def timeCurrent(namespace):
@@ -108,20 +108,20 @@ def argumentParser(defaults):
     subs = result.add_subparsers(title='subcommands',
                                  description='valid subcommands')
 
-    current = subs.add_parser('current',help='Current week')
+    current = subs.add_parser('current', help='Current week')
     current.set_defaults(func=timeCurrent);
 
-    previous = subs.add_parser('previous',help='Previous week')
+    previous = subs.add_parser('previous', help='Previous week')
     previous.set_defaults(func=timePrevious);
 
-    span = subs.add_parser('span',help='Span of times {-f _timestamp_ -t _timestamp}')
+    span = subs.add_parser('span', help='Span of times {-f _timestamp_ -t _timestamp}')
     span.set_defaults(func=timeSpan);
-    span.add_argument('-f',dest='since',help='From timestamp',required=True);
-    span.add_argument('-t',dest='until',help='To timestamp',required=True);
+    span.add_argument('-f', dest='since', help='From timestamp', required=True);
+    span.add_argument('-t', dest='until', help='To timestamp', required=True);
 
-    result.add_argument('--tz',dest='timezone',help='Timezone')
-    result.add_argument('--cutover_weekday', dest='cutover_weekday', default=0,type=int,
-                        help='Day of week where cutover occurs {Monday=0,Tuesday=1,etc}')
+    result.add_argument('--tz', dest='timezone', help='Timezone')
+    result.add_argument('--cutover_weekday', dest='cutover_weekday', default=0, type=int,
+                        help='Day of week where cutover occurs {Monday=0, Tuesday=1, etc}')
     result.add_argument('--cutover_time', dest='cutover_time', default='09:00:00',
                         help='Time of day where cutover occurs {e.g., 09:00:00}')
     result.add_argument('--pd-api-token', dest='pd_api_token', default='pagerduty_api_token',
@@ -130,11 +130,11 @@ def argumentParser(defaults):
                         help='Allowed Pagerduty service ids')
     result.add_argument('--template', dest='template', default='template.md',
                         help='Template file name. Uses mustache.io format')
-    result.add_argument('-o','--output-file', dest='outputFileName',
+    result.add_argument('-o', '--output-file', dest='outputFileName',
                         help='Output file')
-    result.add_argument('-e','--edit', dest='edit', action='store_true', default=False,
+    result.add_argument('-e', '--edit', dest='edit', action='store_true', default=False,
                         help='Open report in $EDITOR')
-    result.add_argument('-c','--copy', dest='copy', action='store_true', default=False,
+    result.add_argument('-c', '--copy', dest='copy', action='store_true', default=False,
                         help='Copy report to clipboard')
 
     result.set_defaults(**defaults)
@@ -199,9 +199,9 @@ def getEditor():
 def editReport(report):
     tempDir = tempfile.mkdtemp()
     try:
-        tempFile = os.path.join(tempDir,'report.md')
+        tempFile = os.path.join(tempDir, 'report.md')
         writeFile(tempFile, report)
-        subprocess.call([getEditor(),tempFile])
+        subprocess.call([getEditor(), tempFile])
         return readFile(tempFile)
     finally:
         shutil.rmtree(tempDir)
