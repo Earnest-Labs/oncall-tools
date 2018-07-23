@@ -6,6 +6,7 @@ on-call rotation.
 # Dependencies
 
 * python 3.6 or better
+* virtualenv installed in your $PATH (pip3 install virtualenv && sudo /usr/bin/easy_install virtualenv)
 * gnu make
 * [Pass, the standard unix password manager](http://www.passwordstore.org/)
   * Note: by the transitive property, this implies you need gpg.
