@@ -110,7 +110,8 @@ def timespan_current(namespace):
 
 def timespan_previous(namespace):
     current = timespan_current(namespace)
-    return {'since':current['since'] + datetime.timedelta(-7), 'until':current['until']}
+    return {'since':current['since'] + datetime.timedelta(-7),
+            'until':current['until'] + datetime.timedelta(-7)}
 
 def timespan(namespace):
     return {'since':datetime.fromisoformat(namespace.since),
