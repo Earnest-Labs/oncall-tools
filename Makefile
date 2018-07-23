@@ -3,6 +3,14 @@ PIP=pip3
 ACTIVATE=source $(VENV)/bin/activate
 REPORT_OPTIONS=-e -c current
 
+ifneq ($(shell which virtualenv),0)
+$(info )
+$(info ERROR: virtualenv is not in your $$PATH. Try running:)
+$(info   pip3 install virtualenv && sudo /usr/bin/easy_install virtualenv)
+$(info )
+$(error virtualenv not in path)
+endif 
+
 .PHONY: setup
 setup: .setup
 
@@ -18,12 +26,9 @@ report: .setup report.py template.md
 	$(ACTIVATE) && python setup.py install
 	touch $@
 
-$(VENV): .venv-installed
+$(VENV):
 	virtualenv -p python3 --no-site-packages $(VENV)
 
 clean:
-	-rm -rf $(VENV) .setup .venv-installed build dist oncallTools.egg-info
+	-rm -rf $(VENV) .setup  build dist oncallTools.egg-info
 
-.venv-installed:
-	which virtualenv || $(PIP) install virtualenv
-	touch $@
