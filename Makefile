@@ -3,7 +3,7 @@ PIP=pip3
 ACTIVATE=source $(VENV)/bin/activate
 REPORT_OPTIONS=-e -c current
 
-ifneq ($(shell which virtualenv),0)
+ifneq ($(shell which virtualenv > /dev/null; echo $$?),0)
 $(info )
 $(info ERROR: virtualenv is not in your $$PATH. Try running:)
 $(info   pip3 install virtualenv && sudo /usr/bin/easy_install virtualenv)
