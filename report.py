@@ -114,8 +114,8 @@ def timespan_previous(namespace):
             'until':current['until'] + datetime.timedelta(-7)}
 
 def timespan(namespace):
-    return {'since':datetime.fromisoformat(namespace.since),
-            'until':datetime.fromisoformat(namespace.until)}
+    return {'since':datetime.datetime.fromisoformat(namespace.since),
+            'until':datetime.datetime.fromisoformat(namespace.until)}
 
 def argument_parser(defaults):
     result = argparse.ArgumentParser(description='Generate a weekly on-call report')
